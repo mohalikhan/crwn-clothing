@@ -22,11 +22,12 @@ export const fetchCollectionsStartAsync = () => {
         const collectionRef = firestore.collection('collections');
         dispatch(fetchCollectionsStart());
 
-        collectionRef.get()
+        collectionRef
+        .get()
         .then(snapshot => {
             const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
             dispatch(fetchCollectionsSuccess(collectionsMap));
         })
         .catch(error => dispatch(fetchCollectionsFailure(error.message)));
-    }
+    };
 };
