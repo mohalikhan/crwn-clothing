@@ -6,30 +6,29 @@ const config = {
     
 };
 
-export const createUserProfileDocument = async (userAuth, additionalData) => {
+export const createUserProfileDocument = (userAuth, additionalData) => {
     if (!userAuth) return;
+    return new Promise((resolve, reject) => {
+        const userRef = firestore.doc(`users/${userAuth.uid}`);
+        const snapShot = userRef.get();  
 
-    const userRef = firestore.doc(`users/${userAuth.uid}`);
-
-    const snapShot = await userRef.get();
-
-    if (!snapShot.exists) {
-        const { displayName, email } = userAuth;
-        const createdAt = new Date();
-
-        try {
-            await userRef.set({
-                displayName,
-                email,
-                createdAt,
-                ...additionalData
-            })
-        } catch (error) {
-            console.log('error creating user', error.message);
+        if (!snapShot.exists) {
+            const { displayName, email } = userAuth;
+            const createdAt = new Date();
+    
+            try {
+                userRef.set({
+                    displayName,
+                    email,
+                    createdAt,
+                    ...additionalData
+                })
+            } catch (error) {
+                return reject(error.message);
+            }
         }
-    }
-
-    return userRef;
+        return resolve(userRef);
+    });
 }
 
 export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
