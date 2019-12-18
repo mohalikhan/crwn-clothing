@@ -1,27 +1,18 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
-
-const config = {
-    apiKey: "AIzaSyDMSVmh5njGA1eFEE_f15lLTc0jLvDPpyg",
-    authDomain: "crwn-db-dccec.firebaseapp.com",
-    databaseURL: "https://crwn-db-dccec.firebaseio.com",
-    projectId: "crwn-db-dccec",
-    storageBucket: "",
-    messagingSenderId: "384990926791",
-    appId: "1:384990926791:web:3d3870d2671c177f186be2"
-};
+import { config } from './config';
 
 export const createUserProfileDocument = (userAuth, additionalData) => {
     if (!userAuth) return;
     return new Promise((resolve, reject) => {
         const userRef = firestore.doc(`users/${userAuth.uid}`);
-        const snapShot = userRef.get();  
+        const snapShot = userRef.get();
 
         if (!snapShot.exists) {
             const { displayName, email } = userAuth;
             const createdAt = new Date();
-    
+
             try {
                 userRef.set({
                     displayName,
